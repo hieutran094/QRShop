@@ -18,20 +18,20 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "client/dist")));
 app.use(router);
 mongoose.set("useCreateIndex", true);
-// mongoose.connect("mongodb://localhost:27017/woodshop", {
-//   useNewUrlParser: true,
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
-// var db = mongoose.connection;
-// //Bắt sự kiện error
-// db.on("error", function (err) {
-//   if (err) console.log(err);
-// });
-// //Bắt sự kiện open
-// db.once("open", function () {
-//   console.log("Connect to db success!");
-// });
+mongoose.connect("mongodb://localhost:27017/woodshop", {
+  useNewUrlParser: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+var db = mongoose.connection;
+//Bắt sự kiện error
+db.on("error", function (err) {
+  if (err) console.log(err);
+});
+//Bắt sự kiện open
+db.once("open", function () {
+  console.log("Connect to db success!");
+});
 const port = process.env.PORT || 8080;
 let server = app.listen(port, "localhost", () => {
   console.log(`Server stated on port:${port}`);

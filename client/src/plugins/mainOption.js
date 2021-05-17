@@ -17,5 +17,6 @@ export default {
         Vue.use(VueSweetalert2);
         Vue.use(IconsPlugin);
         Vue.directive("click-outside",clickOutside);
+        //Vue.router("router",router), 
     }
 }

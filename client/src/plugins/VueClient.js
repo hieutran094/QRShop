@@ -115,6 +115,20 @@ class Client {
         this.UserInfo.Email = null;
       }
     };
+    Client.prototype.CheckToken = function (CallBack) {
+      var CKTK = localStorage.Token;
+      this.CallFunction("UserManager", "CheckToken", { Token: CKTK }, function (e) {
+          if (e.Status == "Pass") {
+              this.SetToken(CKTK);
+              this.SetUserInfo(e.Data);
+          }
+          else {
+            this.SetToken(null);
+            this.SetUserInfo(null);
+          }
+          CallBack(e);
+      }.bind(this));
+  };
     Client.prototype.subscribe = function (event, callback) {
       if (!this.subscribers[event]) {
         this.subscribers[event] = [];

@@ -102,6 +102,9 @@ export default {
   methods: {
     callBack(e) {
       console.log(e);
+      if(e.Status=="Pass"){
+        this.$router.push('/');
+      }
     },
     login() {
       this.$client.Login("root@gmail.com", "000", this.callBack);

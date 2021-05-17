@@ -1,8 +1,9 @@
 import APIBase from "../websocket/APIBase.js";
-//import { User } from "../models/user.js";
-import users from "../models/userTest.js"
+import { User } from "../models/user.js";
+//import users from "../models/userTest.js"
 import * as jwtHelper from "../helpers/jwt.helper.js";
 import * as bcryptHelper from "../helpers/bcrypt.helper.js";
+import { isAuthSocket } from "../middleware/authMiddleware.js";
 
 class UserManager extends APIBase {
   constructor() {
@@ -24,13 +25,13 @@ class UserManager extends APIBase {
     };
     UserManager.prototype.Login = async (req, messageReturn) => {
       try {
-        // let user = await new Promise((resolve, reject) => {
-        //   User.findOne({ email: req.email }, (err, u) => {
-        //     if (err) reject(err);
-        //     resolve(u);
-        //   });
-        // });
-        let user = this.GetUser(req.email);
+        let user = await new Promise((resolve, reject) => {
+          User.findOne({ email: req.email }, (err, u) => {
+            if (err) reject(err);
+            resolve(u);
+          });
+        });
+        //let user = this.GetUser(req.email);
         if (!user) {
           throw new Error(`Wrong username or password`);
         } else {
@@ -53,10 +54,21 @@ class UserManager extends APIBase {
             messageReturn.Status = StatusValue.Pass;
             messageReturn.Data = { accessToken, refreshToken, user };
           } else {
-            //messageReturn.Message = `Wrong username or password`;
-            //messageReturn.Status = StatusValue.Fail;
             throw new Error(`Wrong username or password`);
           }
+        }
+      } catch (err) {
+        throw err;
+      }
+    };
+    UserManager.prototype.CheckToken = async (req, messageReturn) => {
+      try {
+        let result = isAuthSocket(req.Token);
+        if (!result) throw new Error("Error while verify token");
+        else {
+          messageReturn.Message = `Success`;
+          messageReturn.Status = StatusValue.Pass;
+          messageReturn.Data = result;
         }
       } catch (err) {
         throw err;
