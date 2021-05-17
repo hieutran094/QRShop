@@ -1,0 +1,23 @@
+.text-white {
+    color: #fff!important;
+}
+.display-3, .display-4 {
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+}
+
+.display-3 {
+    font-size: 2.1875rem !important;
+}
+.display-1 span, .display-2 span, .display-3 span, .display-4 span {
+    display: block;
+    font-weight: 300;
+}
+.lead {
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+}
+.lead, p {
+    font-weight: 300;
+    line-height: 1.7;
+}
