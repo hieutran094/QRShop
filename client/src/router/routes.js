@@ -1,48 +1,69 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import MainLayout from "../layout/MainLayout.vue";
+import DashboardLayout from "../layout/DashboardLayout.vue";
 import home from "../components/Home.vue";
-import HelloWorld from "../components/HelloWorld.vue";
-import footer from "../layout/footer.vue";
-import header from "../layout/header.vue";
+//import HelloWorld from "../components/HelloWorld.vue";
 import login from "../components/Login.vue";
+//import sidebar from "../components/miniComponents/BaseSidebar.vue";
 Vue.use(VueRouter);
-
 const router = new VueRouter({
   mode: process.env.NODE_ENV === "production" ? "hash" : "history",
   routes: [
     {
-      path: "/login",
-      components: { header: header, default: login, footer: footer },
+      path: "/",
+      component: MainLayout,
+      redirect: "/home",
+      children: [
+        {
+          path: "login",
+          component: login,
+        },
+        {
+          path: "home",
+          component: home,
+        },
+      ],
     },
     {
-      path: "/",
-      components: { header: header, default: home, footer: footer },
-    },
-    { path: "/hello", components: { header: header, default: HelloWorld } },
+      path: "/dashboard",
+      component: DashboardLayout,
+      // redirect: "/dashboard",
+      children: [
+        // {
+        //   path: "dashboard",
+        //   component: login,
+        // },
+        // {
+        //   path: "home",
+        //   component: home,
+        // },
+      ],
+    }
     // {path:'*',components:{}}
   ],
 });
-let seft=router.parent;
-router.beforeEach(
-  function(to, from, next) {
-    let web = ["/", "login"];
-    if (web.includes(to.name)) {
-      next();
-    } else {
-        seft.$client.CheckToken((e) => {
-        if (e.Status === "Pass") {
-          next();
-        } else {
-          router.push({
-            name: "/",
-            params: {
-              serverError: true,
-              serverMsg: "Please login to continue.",
-            },
-          });
-        }
-      });
-    }
-  }
-);
+// seft=router.app;
+// router.beforeEach(
+//   function(to, from, next) {
+//     let web = ["/", "login"];
+//     if (web.includes(to.name)) {
+//       next();
+//     } else {
+//         seft.$client.CheckToken((e) => {
+//         if (e.Status === "Pass") {
+//           next();
+//         } else {
+//           router.push({
+//             name: "/",
+//             params: {
+//               serverError: true,
+//               serverMsg: "Please login to continue.",
+//             },
+//           });
+//         }
+//       });
+//     }
+//   }
+// );
 export { router };

@@ -139,6 +139,7 @@
 <script>
 
 export default {
+  name: "headers",
   components: {
   },
   methods: {},

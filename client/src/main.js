@@ -8,7 +8,6 @@ Vue.use(mainOption);
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
 Vue.prototype.$http=axios;
-router.prototype.$seft=this;
 new Vue({
   router,
   render: (h) => h(App),

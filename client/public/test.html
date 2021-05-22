@@ -9,7 +9,7 @@
   <body>
     <button onclick="Send()">test</button>
     <script>
-      let websocket = new WebSocket(`ws://localhost:3000`);
+      let websocket = new WebSocket(`ws://202.71.103.234:2000`);
       websocket.onmessage = function(e) {
         let finish = new Date().getMilliseconds();
         console.log(`finish: ${finish}`);
