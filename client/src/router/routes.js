@@ -30,10 +30,10 @@ const router = new VueRouter({
       component: DashboardLayout,
       // redirect: "/dashboard",
       children: [
-        // {
-        //   path: "dashboard",
-        //   component: login,
-        // },
+        {
+          path: "dashboard",
+          component: login,
+        }
         // {
         //   path: "home",
         //   component: home,
