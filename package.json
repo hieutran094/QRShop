@@ -22,6 +22,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.5",
     "path": "^0.12.7",
+    "validator": "^13.6.0",
     "ws": "^7.4.5"
   },
   "devDependencies": {

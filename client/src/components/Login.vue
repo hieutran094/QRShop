@@ -60,6 +60,7 @@
                   class="mb-3"
                   placeholder="Email"
                   addonLeftIcon="glyphicon glyphicon-envelope"
+                  v-model="email"
                 >
                 </base-input>
                 <base-input
@@ -67,6 +68,7 @@
                   type="password"
                   placeholder="Password"
                   addonLeftIcon="ni ni-lock-circle-open"
+                  v-model="password"
                 >
                 </base-input>
                 <base-checkbox> Remember me </base-checkbox>
@@ -99,15 +101,43 @@
 export default {
   name: "login",
   components: {},
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
   methods: {
     callBack(e) {
-      console.log(e);
-      if(e.Status=="Pass"){
-        this.$router.push('/');
+      if (e.Status == "Pass") {
+        this.$swal.fire({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          icon: "success",
+          title: "Signed in successfully",
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", this.$swal.stopTimer);
+            toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+          },
+        });
+        this.$router.push("/");
+      } else {
+        this.$swal.fire(
+          {
+            icon: "error",
+            title: "Login Fail",
+            text: e.Message,
+          },
+          function() {
+          }
+        );
       }
     },
     login() {
-      this.$client.Login("root@gmail.com", "000", this.callBack);
+      this.$client.Login(this.email,this.password, this.callBack);
     },
   },
 };

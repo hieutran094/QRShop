@@ -2,10 +2,10 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import MainLayout from "../layout/MainLayout.vue";
 import DashboardLayout from "../layout/DashboardLayout.vue";
+import Dashboard from "../components/Dashboard.vue"
+import Users from "../components/Users.vue"
 import home from "../components/Home.vue";
-//import HelloWorld from "../components/HelloWorld.vue";
 import login from "../components/Login.vue";
-//import sidebar from "../components/miniComponents/BaseSidebar.vue";
 Vue.use(VueRouter);
 const router = new VueRouter({
   mode: process.env.NODE_ENV === "production" ? "hash" : "history",
@@ -26,31 +26,30 @@ const router = new VueRouter({
       ],
     },
     {
-      path: "/dashboard",
+      path: "/admin",
       component: DashboardLayout,
-      // redirect: "/dashboard",
+      redirect: "/admin/dashboard",
       children: [
         {
           path: "dashboard",
-          component: login,
+          component: Dashboard
+        },
+        {
+          path: "users",
+          component: Users
         }
-        // {
-        //   path: "home",
-        //   component: home,
-        // },
       ],
     }
     // {path:'*',components:{}}
   ],
 });
-// seft=router.app;
 // router.beforeEach(
 //   function(to, from, next) {
 //     let web = ["/", "login"];
 //     if (web.includes(to.name)) {
 //       next();
 //     } else {
-//         seft.$client.CheckToken((e) => {
+//         this.$client.CheckToken((e) => {
 //         if (e.Status === "Pass") {
 //           next();
 //         } else {

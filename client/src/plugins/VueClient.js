@@ -1,3 +1,4 @@
+// import 
 class Client {
   constructor(vue) {
     this.subscribers = {};
@@ -143,7 +144,8 @@ class Client {
       }
     };
     Client.prototype.CheckToken = function(CallBack) {
-      var CKTK = localStorage.Token;
+      // var CKTK = localStorage.Token;
+      var CKTK =this.Vue.$cookies.get("Token");
       this.CallFunction(
         "UserManager",
         "CheckToken",

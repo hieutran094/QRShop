@@ -10,12 +10,21 @@
   >
     <div class="container">
       <slot name="brand"> </slot>
-      <button-tonggle
-        :toggled="toggled"
-        :target="contentId"
-        @click.native.stop="toggled = !toggled"
-      >
-      </button-tonggle>
+      <slot name="tonggle-sidebar"></slot>
+      <div class="right-button">
+        <button-tonggle
+          
+          :toggled="toggled"
+          :target="contentId"
+          @click.native.stop="toggled = !toggled"
+        >
+          <div slot="icon">
+            <span class="navbar-toggler-bar navbar-kebab dot1"></span>
+            <span class="navbar-toggler-bar navbar-kebab dot2"></span>
+            <span class="navbar-toggler-bar navbar-kebab dot3"></span>
+          </div>
+        </button-tonggle>
+      </div>
       <div
         class="collapse navbar-collapse"
         :id="contentId"
@@ -46,8 +55,7 @@ export default {
   data() {
     return { toggled: false };
   },
-  components: {
-  },
+  components: {},
   methods: {
     closeMenu() {
       this.toggled = false;
@@ -55,7 +63,7 @@ export default {
   },
 };
 </script>
-<style  scoped>
+<style scoped>
 .navbar-transparent {
   background: transparent !important;
   position: absolute;
@@ -68,7 +76,7 @@ export default {
 .navbar-transparent .navbar-nav >>> .nav-link :hover {
   color: hsla(0, 0%, 100%, 0.95) !important;
 }
-@media screen and (max-width: 991.98px) {
+@media screen and (max-width: 991px) {
   .navbar-collapse.show {
     padding: 1.5rem;
     border-radius: 0.25rem;
@@ -89,7 +97,23 @@ export default {
     display: inline-block;
     padding: 0;
   }
-
+  .navbar-brand {
+    display: none;
+  }
+  .innner-button {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    overflow: auto;
+    max-height: 100vh;
+  }
+  .right-button {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    overflow: auto;
+    max-height: 100vh;
+  }
   .navbar-light .navbar-nav .nav-link[data-v-ad454dee]:hover,
   .navbar-light .navbar-nav .nav-link[data-v-ad454dee]:focus {
     color: #172b4d !important;
@@ -104,12 +128,6 @@ export default {
     color: #172b4d !important;
     transition: all 0.15s linear;
   }
-  /* .navbar-light .navbar-toggler {
-    border-color: rgba(255, 255, 255, 0);
-    transition: all 0.15s linear;
-  } */
-  .navbar >>> .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.95)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-  }
+  
 }
 </style>

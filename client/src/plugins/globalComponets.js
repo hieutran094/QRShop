@@ -6,6 +6,7 @@ import BaseDrop from "../components/miniComponents/BaseDropdown.vue";
 import CloseButton from "../components/miniComponents/CloseButton.vue";
 import ButtonTonggle from "../components/miniComponents/BaseButtonToggle.vue";
 import BaseSidebar from "../components/miniComponents/BaseSidebar.vue";
+import BaseSidebarLink from "../components/miniComponents/BaseSidebarLink.vue";
 import { FadeTransition } from "vue2-transitions";
 
 export default{
@@ -18,6 +19,7 @@ export default{
         vue.component(CloseButton.name,CloseButton);
         vue.component(ButtonTonggle.name,ButtonTonggle);
         vue.component(BaseSidebar.name,BaseSidebar);
+        vue.component(BaseSidebarLink.name,BaseSidebarLink);
         vue.component(FadeTransition.name,FadeTransition);
     }
 }
