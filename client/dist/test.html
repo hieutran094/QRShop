@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TEST</title>
+  </head>
+  <body>
+    <button onclick="Send()">test</button>
+    <script>
+      let websocket = new WebSocket(`ws://202.71.103.234:2000`);
+      websocket.onmessage = function(e) {
+        let finish = new Date().getMilliseconds();
+        console.log(`finish: ${finish}`);
+        console.log(`Get>_${e}`);
+      };
+      function Send() {
+        websocket.send({"Token":"TKTEST","Class":"UserManager","Function":"Login"});
+        let start = new Date().getMilliseconds();
+        console.log(`start: ${start}`);
+      }
+    </script>
+  </body>
+</html>

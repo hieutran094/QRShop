@@ -3,12 +3,17 @@ import validator from 'validator';
 const Schema = mongoose.Schema;
 
 const roleSchema = new Schema({
-  rolename: {
+  _id: Schema.Types.ObjectId,
+  role_name: {
     type: String,
     required: true,
-    trim: true
   },
-  editTime: {
+  privilege: [{ type: Schema.Types.ObjectId, ref: "privilege" }],
+  role_describe: {
+    type: String,
+    required: false
+  },
+  edit_time: {
     type: Date,
     required: false,
     validate: (value) => {

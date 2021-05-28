@@ -1,16 +1,18 @@
-// import 
 class Client {
-  constructor(vue) {
+  constructor(vue, onOpen) {
     this.subscribers = {};
     this.ClientID = "";
     this.Vue = vue;
     this.websocket = null;
     this.UserInfo = {
       ID: "",
+      Level: null,
       UserName: "",
       Email: "",
     };
     this.Token = null;
+    this.OnOpen = onOpen;
+    this.IsOpen = false;
     Client.prototype.Init = function(obj) {
       if (this.ClientID == "") {
         this.ClientID =
@@ -35,11 +37,13 @@ class Client {
         this.websocket.onopen = function(e) {
           console.log(`onOpen:connetion open`);
           obj.OnOpen(e);
-        };
+          this.IsOpen = true;
+        }.bind(this);
       } else {
         this.websocket.onopen = function() {
           console.log(`onOpen:connetion open`);
-        };
+          this.IsOpen = true;
+        }.bind(this);
       }
       if (obj.OnClose) {
         this.websocket.onclose = function() {
@@ -49,7 +53,6 @@ class Client {
       } else {
         let seft = this.Vue;
         this.websocket.onclose = function(e) {
-          console.log(seft.swal());
           console.log("onClose:connetion close");
           seft.swal.fire(
             {
@@ -130,22 +133,22 @@ class Client {
     Client.prototype.SetToken = function(Token) {
       this.Token = Token;
       this.Vue.$cookies.set("Token", Token, "1h");
-      //localStorage.setItem("Token", Token);
     };
     Client.prototype.SetUserInfo = function(UserInfo) {
       if (UserInfo) {
         this.UserInfo.ID = UserInfo.ID;
         this.UserInfo.UserName = UserInfo.UserName;
         this.UserInfo.Email = UserInfo.Email;
+        this.UserInfo.Level = UserInfo.Level;
       } else {
         this.UserInfo.ID = null;
         this.UserInfo.UserName = null;
         this.UserInfo.Email = null;
+        this.UserInfo.Level = null;
       }
     };
-    Client.prototype.CheckToken = function(CallBack) {
-      // var CKTK = localStorage.Token;
-      var CKTK =this.Vue.$cookies.get("Token");
+    Client.prototype.CheckToken = function(callback) {
+      var CKTK = this.Vue.$cookies.get("Token");
       this.CallFunction(
         "UserManager",
         "CheckToken",
@@ -158,7 +161,27 @@ class Client {
             this.SetToken(null);
             this.SetUserInfo(null);
           }
-          CallBack(e);
+          callback(e);
+        }.bind(this)
+      );
+    };
+    Client.prototype.CheckPermission = function(Url, Callback) {
+      this.CallFunction(
+        "UserManager",
+        "CheckPermission",
+        { UserName: this.UserInfo.UserName, Url: Url },
+        function(e) {
+          Callback(e);
+          if (e.Status == "Fail") {
+            this.Vue.swal.fire({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              icon: "warning",
+              title: "Sorry, you don't have  permission",
+            });
+          }
         }.bind(this)
       );
     };
@@ -184,8 +207,11 @@ class Client {
         subscriberCallback(data)
       );
     };
+    Client.prototype.sleep = function(Millis) {
+      return new Promise((resolve) => setTimeout(resolve, Millis));
+    };
 
-    this.Init({ ServerIP: "localhost", Port: "3000" });
+    this.Init({ ServerIP: "localhost", Port: "3000", OnOpen: this.OnOpen });
   }
 }
 export default Client;

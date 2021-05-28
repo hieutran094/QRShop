@@ -1,15 +1,27 @@
 import mongoose from "mongoose";
-import validator from 'validator';
+import validator from "validator";
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+  _id: Schema.Types.ObjectId,
   username: {
     type: String,
     required: true,
+    trim: true,
   },
+  status: {
+    type: Number,
+    default: 0,
+  },
+  level: {
+    type: Number,
+    default: 0,
+  },
+  role: [{ type: Schema.Types.ObjectId, ref: "role" }],
   password: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
   },
   email: {
     type: String,
@@ -19,32 +31,38 @@ const userSchema = new Schema({
     validate: (value) => {
       return validator.isEmail(value);
     },
+    trim: true,
   },
-  firstName: {
+  first_name: {
     type: String,
     required: false,
+    trim: true,
   },
-  lastName: {
+  last_name: {
     type: String,
     required: false,
+    trim: true,
   },
   address: {
     type: String,
     required: false,
+    trim: true,
   },
-  phoneNumber: {
+  phone_number: {
     type: String,
     required: false,
     validate: (value) => {
       return validator.isMobilePhone(value);
-    }
+    },
+    trim: true,
   },
-  editTime: {
+  edit_time: {
     type: Date,
     required: false,
     validate: (value) => {
       return validator.isDate(value);
-    }
+    },
+    trim: true,
   },
 });
 const User = mongoose.model("user", userSchema, "user");

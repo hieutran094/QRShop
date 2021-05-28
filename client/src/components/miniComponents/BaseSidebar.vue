@@ -14,6 +14,9 @@
         <base-sidebar-link link="/admin/dashboard" icon="pie-chart-fill" content="Dashboard"></base-sidebar-link>
       </li>
       <li class="active">
+        <base-sidebar-link link="/admin/role" icon="caret-right-square-fill" content="Role"></base-sidebar-link>
+      </li>
+      <li class="active">
         <base-sidebar-link link="/admin/users" icon="people-fill" content="User"></base-sidebar-link>
       </li>
       <li class="active">

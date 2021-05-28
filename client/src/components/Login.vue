@@ -123,7 +123,8 @@ export default {
             toast.addEventListener("mouseleave", this.$swal.resumeTimer);
           },
         });
-        this.$router.push("/");
+        if (e.Data.UserInfo.Level == 0) this.$router.push("/");
+        else this.$router.push("/admin");
       } else {
         this.$swal.fire(
           {
@@ -131,13 +132,12 @@ export default {
             title: "Login Fail",
             text: e.Message,
           },
-          function() {
-          }
+          function() {}
         );
       }
     },
     login() {
-      this.$client.Login(this.email,this.password, this.callBack);
+      this.$client.Login(this.email, this.password, this.callBack);
     },
   },
 };

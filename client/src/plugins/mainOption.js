@@ -25,7 +25,7 @@ export default {
     });
     Vue.prototype.$sidebar = app.sidebarStore;
     Vue.use(VueCookies);
-    Vue.prototype.$client = new Client(Vue);
+    Vue.prototype.$client = new Client(Vue, () => {});
     Vue.use(globalComponets);
     Vue.use(VueLazyload);
     Vue.use(VueSweetalert2);
