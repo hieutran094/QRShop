@@ -7,6 +7,8 @@ import globalComponets from "./globalComponets.js";
 import ClickOutside from "vue-click-outside";
 import VueLazyload from "vue-lazyload";
 import VueSweetalert2 from "vue-sweetalert2";
+import layer from 'vue-layer'
+import 'vue-layer/lib/vue-layer.css';
 import Client from "./VueClient.js";
 import VueCookies from "vue-cookies";
 const SidebarStore = {
@@ -25,6 +27,7 @@ export default {
     });
     Vue.prototype.$sidebar = app.sidebarStore;
     Vue.use(VueCookies);
+    Vue.prototype.$layer = layer(Vue);
     Vue.prototype.$client = new Client(Vue, () => {});
     Vue.use(globalComponets);
     Vue.use(VueLazyload);
