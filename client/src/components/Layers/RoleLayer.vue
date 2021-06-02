@@ -229,34 +229,45 @@ export default {
       this.selected = [];
     },
     saveRole: async function() {
-      // this.$parent.$data.iframeData = Object.assign({}, this.form);
-      // this.lydata.iframeData = Object.assign(this.lydata.iframeData, this.form);
-      // this.$layer.msg("成功");
       try {
-        this.loading=true;
+        if (this.role_name == "") {
+          throw new Error("Role name can't be null");
+        }
+        this.loading = true;
         let result = await new Promise((resolve, reject) => {
           this.$client.CallFunction(
             "RoleManager",
-            "Insert",
-            {
-              role_name: this.role_name,
-              role_describe: this.role_describe,
-              privilege: this.values
-            },
+            this.iframeData.type == `edit` ? "Update" : "Insert",
+            this.iframeData.type == `edit`
+              ? {
+                  id: this.iframeData.role._id,
+                  new: {
+                    role_name: this.role_name,
+                    role_describe: this.role_describe,
+                    privilege: this.values,
+                  },
+                }
+              : {
+                  role_name: this.role_name,
+                  role_describe: this.role_describe,
+                  privilege: this.values,
+                },
             function(e) {
               if (e.Status == "Pass") resolve(e);
               else reject(e.Message);
             }
           );
         });
-        if(result){
+        if (result) {
+          this.$parent.$data.iframeData.isChange = true;
           this.$layer.msg(result.Message);
           this.$layer.close(this.layerid);
         }
       } catch (err) {
+        console.log(err);
         this.$layer.msg(err);
       } finally {
-        this.loading=false;
+        this.loading = false;
       }
     },
     cancel() {
@@ -287,13 +298,7 @@ export default {
         this.init();
       }
     } catch (err) {
-      this.$swal.fire(
-        {
-          icon: "error",
-          text: err,
-        },
-        function() {}
-      );
+      this.$layer.msg(err);
     }
   },
   watch: {

@@ -54,7 +54,7 @@
         <v-card-actions>
           <v-container>
             <v-row>
-              <v-col cols="12" md="12">
+              <v-col cols="12">
                 <v-data-table
                   checkbox-color="#000"
                   data-table-border-radius
@@ -87,7 +87,7 @@
   </div>
 </template>
 <script>
-import RoleLayer from "./RoleLayer.vue";
+import RoleLayer from "./Layers/RoleLayer.vue";
 export default {
   name: "role",
   data() {
@@ -103,6 +103,7 @@ export default {
       iframeData: {
         role: [],
         type: "",
+        isChange: false,
       },
     };
   },
@@ -130,10 +131,48 @@ export default {
       }
       return lp == "" ? "N/A" : lp;
     },
+    loadDataToTable: async function() {
+      try {
+        let result = await new Promise((resolve, reject) => {
+          this.$client.CallFunction("RoleManager", "GetAllRole", {}, function(
+            e
+          ) {
+            if (e.Status == "Pass") resolve(e.Data);
+            else reject(e.Message);
+          });
+        });
+        if (result.length > 0) {
+          this.headers = [
+            { text: "Role Name", value: "role_name" },
+            { text: "Role Describe", value: "role_describe" },
+            {
+              text: "Privilege",
+              value: "privilege",
+              formatter: this.formatPrivilege,
+            },
+            {
+              text: "Edit Time",
+              value: "edit_time",
+              formatter: this.formatTime,
+            },
+          ];
+          this.desserts = result;
+        }
+      } catch (err) {
+        this.$swal.fire(
+          {
+            icon: "error",
+            text: err,
+          },
+          function() {}
+        );
+      }
+    },
     showLayer: function(type) {
       let role = this.selected[0];
       this.iframeData.role = role;
       this.iframeData.type = type;
+      this.iframeData.isChange = false;
       let title =
         type == `add` ? `Add new role` : `Edit ${role.role_name} role`;
       this.$layer.iframe({
@@ -152,63 +191,56 @@ export default {
       });
     },
     deleteRole: async function() {
+      let comfirm = {};
       try {
-        console.log(this.selected)
-        let listID=[];
-        for(let i=0;i<this.selected.length;i++){
-          listID.push(this.selected[i]._id)
+        let listID = [];
+        for (let i = 0; i < this.selected.length; i++) {
+          listID.push(this.selected[i]._id);
         }
-        let result = await new Promise((resolve, reject) => {
-          this.$client.CallFunction(
-            "RoleManager",
-            "Delete",
+        comfirm = await new Promise((resolve) => {
+          this.$layer.confirm(
+            `Are you sure to delete ${listID.length} record？`,
             {
-              id: listID
+              title: "Confirm delete",
+              btn: ["Yes", "No"],
+              icon: 3,
             },
-            function(e) {
-              if (e.Status == "Pass") resolve(e);
-              else reject(e.Message);
+            (layerid) => {
+              resolve({ yes: true, layerID: layerid });
+            },
+            (layerid) => {
+              resolve({ yes: false, layerID: layerid });
             }
           );
         });
-        if (result) {
-          this.$layer.msg(result.Message);
+        if (comfirm.yes) {
+          let result = await new Promise((resolve, reject) => {
+            this.$client.CallFunction(
+              "RoleManager",
+              "Delete",
+              {
+                id: listID,
+              },
+              function(e) {
+                if (e.Status == "Pass") resolve(e);
+                else reject(e.Message);
+              }
+            );
+          });
+          if (result) {
+            this.$layer.msg(result.Message);
+            this.loadDataToTable();
+          }
         }
       } catch (err) {
         this.$layer.msg(err);
+      } finally {
+        this.$layer.close(comfirm.layerID);
       }
     },
   },
   mounted: async function() {
-    try {
-      let result = await new Promise((resolve, reject) => {
-        this.$client.CallFunction("RoleManager", "GetAllRole", {}, function(e) {
-          if (e.Status == "Pass") resolve(e.Data);
-          else reject(e.Message);
-        });
-      });
-      if (result.length > 0) {
-        this.headers = [
-          { text: "Role Name", value: "role_name" },
-          { text: "Role Describe", value: "role_describe" },
-          {
-            text: "Privilege",
-            value: "privilege",
-            formatter: this.formatPrivilege,
-          },
-          { text: "Edit Time", value: "edit_time", formatter: this.formatTime },
-        ];
-        this.desserts = result;
-      }
-    } catch (err) {
-      this.$swal.fire(
-        {
-          icon: "error",
-          text: err,
-        },
-        function() {}
-      );
-    }
+    this.loadDataToTable();
   },
   watch: {
     selected() {
@@ -216,6 +248,14 @@ export default {
       else this.editActive = true;
       if (this.selected.length > 0) this.deleteActive = false;
       else this.deleteActive = true;
+    },
+    "iframeData.isChange": {
+      handler: function() {
+        this.loadDataToTable();
+        this.selected = [];
+      },
+      deep: true,
+      immediate: false,
     },
   },
   computed: {},

@@ -11,7 +11,7 @@ class UserManager extends APIBase {
   constructor() {
     super();
     this._MustLogin = false;
-    let tokenList = {};
+    // let tokenList = {};
     const accessTokenLife = process.env.ACCESS_TOKEN_LIFE || "1h";
     const accessTokenSecret =
       process.env.ACCESS_TOKEN_SECRET || "trovedongsongquehuong";
@@ -78,7 +78,6 @@ class UserManager extends APIBase {
             resolve(u);
           });
         });
-        //let user = this.GetUser(req.email);
         if (!user) {
           throw new Error(`Wrong username or password`);
         } else {
@@ -144,15 +143,13 @@ class UserManager extends APIBase {
         else if (result.role.length <= 0)
           throw new Error("Not found permission");
         else {
-          for(let i=0;i<result.role.length;i++){
+          for (let i = 0; i < result.role.length; i++) {
             if (result.role[i].privilege.length > 0) {
               messageReturn.Message = `Success`;
               messageReturn.Status = StatusValue.Pass;
               messageReturn.Data = {};
               break;
-            }
-            else 
-            throw new Error("Not found permission");
+            } else throw new Error("Not found permission");
           }
         }
       } catch (err) {

@@ -49,6 +49,13 @@
                   </base-button>
                 </div>
               </div>
+              <div class="col-lg-6 d-flex justify-content-center">
+                <img
+                  v-lazy="'img/qr.svg'"
+                  class="card-img"
+                  style="height:200px;width:200px"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -59,32 +66,41 @@
         <div class="row justify-content-center">
           <div class="col-lg-12">
             <div class="row row-grid">
-              <div class="col-lg-4">
+              <div
+                v-for="item in cards"
+                :class="[`col-lg-${item.col}`]"
+                :key="item._id"
+              >
+                <home-card :card="item"></home-card>
+              </div>
+              <!-- <div class="col-lg-4">
                 <card class="border-0" hover shadow body-classes="py-5">
                   <icon
-                    name="ni ni-check-bold"
+                    name="mdi mdi-qrcode"
                     type="primary"
                     rounded
-                    class="mb-4"
+                    class="mb-4 border-dark"
                   >
                   </icon>
                   <h6 class="text-primary text-uppercase">Normal QRCode</h6>
-                  <p class="description mt-3"></p>
+                  <p class="description mt-3">
+                    Normal card with
+                  </p>
                   <img v-lazy="'img/qr-code-card.png'" class="card-img" />
                   <div>
-                    <!-- <badge type="primary" rounded>design</badge>
+                    <badge type="primary" rounded>design</badge>
                     <badge type="primary" rounded>system</badge>
-                    <badge type="primary" rounded>creative</badge> -->
+                    <badge type="primary" rounded>creative</badge>
                   </div>
                   <base-button tag="a" href="#" type="primary" class="mt-4">
-                    Try It
+                    Learn More
                   </base-button>
                 </card>
               </div>
               <div class="col-lg-4">
                 <card class="border-0" hover shadow body-classes="py-5">
                   <icon
-                    name="ni ni-istanbul"
+                    name="mdi mdi-qrcode-scan"
                     type="success"
                     rounded
                     class="mb-4"
@@ -101,13 +117,18 @@
                     <badge type="success" rounded>success</badge>
                   </div>
                   <base-button tag="a" href="#" type="success" class="mt-4">
-                    Try It
+                    Learn More
                   </base-button>
                 </card>
               </div>
               <div class="col-lg-4">
                 <card class="border-0" hover shadow body-classes="py-5">
-                  <icon name="ni ni-planet" type="warning" rounded class="mb-4">
+                  <icon
+                    name="mdi mdi-qrcode-edit"
+                    type="warning"
+                    rounded
+                    class="mb-4"
+                  >
                   </icon>
                   <h6 class="text-warning text-uppercase">Prepare Launch</h6>
                   <p class="description mt-3">
@@ -121,10 +142,10 @@
                     <badge type="warning" rounded>launch</badge>
                   </div>
                   <base-button tag="a" href="#" type="warning" class="mt-4">
-                    Try It
+                    Learn More
                   </base-button>
                 </card>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -133,7 +154,81 @@
   </div>
 </template>
 <script>
+import HomeCard from "./miniComponents/HomeCard.vue";
 export default {
   name: "home",
+  components: {
+    "home-card": HomeCard,
+  },
+  data() {
+    return {
+      cards: [],
+    };
+  },
+  methods: {
+    loadCard: async function() {
+      // let result = await new Promise((resolve, reject) => {
+      //     this.$client.CallFunction(
+      //       "",
+      //       "GetUserRole",
+      //       urn ? { username: urn } : {},
+      //       function(e) {
+      //         if (e.Status == "Pass") resolve(e.Data);
+      //         else reject(e.Message);
+      //       }
+      //     );
+      //   });
+      this.cards = [
+        {
+          header: "Hello",
+          icon: "mdi mdi-qrcode",
+          content: "Just Testing",
+          hover: true,
+          badge: ["sale", "qrcode"],
+          type: "primary",
+          url: "/",
+          col: 4,
+        },
+        {
+          header: "Hello",
+          icon: "mdi mdi-qrcode",
+          content: "Just Testing",
+          hover: true,
+          badge: ["sale", "qrcode"],
+          type: "primary",
+          url: "/",
+          col: 4,
+        },
+        {
+          header: "Hello",
+          icon: "mdi mdi-qrcode",
+          content: "Just Testing",
+          hover: false,
+          badge: ["sale", "qrcode", "sale", "qrcode", "sale", "qrcode"],
+          type: "primary",
+          url: "/",
+          col: 4,
+        },
+      ];
+    },
+  },
+  mounted: function() {
+    this.loadCard();
+  },
 };
 </script>
+<style>
+.section-shaped .shape.shape-skew + .container .col {
+  margin-top: -100px;
+}
+@media (min-width: 992px) {
+  .mt--200 {
+    margin-top: -200px !important;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    max-width: 1092px;
+  }
+}
+</style>

@@ -1,208 +1,282 @@
 <template>
   <div class="content">
-    <div class="row">
-      <div class="col-12">
-        <card
-          type="light"
-          shadow
-          scare="mb-3"
-          headerClasses="bg-white"
-          bodyClasses="px-lg-5 py-lg-5"
-          class="border-0"
-        >
-          <div slot="header">
-            <h4>Users</h4>
-          </div>
-          <div class="row">
-            <div class="col-md-6 col-sm-12 table-toolbar">
-              <b-button-toolbar class="" aria-label="">
-                <b-button-group size="" class="mr-1">
-                  <b-button variant="outline-primary"><i class="mdi mdi-plus-thick" aria-hidden="true"></i>Add</b-button>
-                  <b-button variant="outline-primary"><i class="mdi mdi-pencil" aria-hidden="true"></i>Edit</b-button>
-                  <b-button variant="outline-primary"><i class="mdi mdi-delete-forever" aria-hidden="true"></i>Delete</b-button>
-                </b-button-group>
-              </b-button-toolbar>
-            </div>
-            <div class="col-md-6 col-sm-12 ">
-              <v-text-field
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Search"
-                single-line
-                hide-details
-              ></v-text-field>
-            </div>
-            <div class="col-12">
-              <!-- <b-table
-                striped
-                hover
-                :items="items"
-                :fields="fields"
-                :select-mode="true"
-                responsive="sm"
-                ref="selectableTable"
-                selectable
-                @row-selected="onRowSelected"
-              >
-                <template #cell(selected)="{item}">
-                  <b-form-checkbox
-                    v-model="selected"
-                    :value="item"
-                    name="checkbox-1"
-                    @click.stop.native="selectThisRow"
+    <v-app>
+      <v-card elevation="2" outlined>
+        <v-card-title> <h4>User Role</h4></v-card-title>
+        <v-list-item three-line>
+          <v-form onSubmit="return false;">
+            <v-container>
+              <v-row>
+                <v-col cols="12" md="6">
+                  <b-button
+                    variant="outline-primary"
+                    :disabled="editActive"
+                    @click="showLayer"
+                    ><i class="mdi mdi-plus-thick" aria-hidden="true"></i
+                    >Add</b-button
                   >
-                  </b-form-checkbox>
-                </template>
-              </b-table> -->
-              <v-data-table
-                checkbox-color="#000"
-                v-model="selected"
-                :headers="headers"
-                :items="desserts"
-                :single-select="singleSelect"
-                item-key="name"
-                show-select
-                :search="search"
-                class="elevation-1"
-              >
-                <!-- <template v-slot:top>
-                  <v-switch
-                    v-model="singleSelect"
-                    label="Single select"
-                    class="pa-3"
-                  ></v-switch>
-                </template> -->
-              </v-data-table>
-            </div>
-          </div>
-        </card>
-      </div>
-    </div>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="Enter to search"
+                    outlined
+                    dense
+                    hide-details
+                    v-on:keyup.enter="searchUser"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row> </v-row>
+            </v-container>
+          </v-form>
+        </v-list-item>
+        <v-card-actions>
+          <v-container>
+            <v-row>
+              <v-col cols="12">
+                <v-data-table
+                  checkbox-color="#000"
+                  data-table-border-radius
+                  v-model="selected"
+                  :headers="headers"
+                  :items="desserts"
+                  :single-select="singleSelect"
+                  item-key="_id"
+                  show-select
+                  class="elevation-1"
+                  @click:row="selectRow"
+                  elevation="5"
+                >
+                  <template #item.full_name="{ item }"
+                    >{{ item.first_name }} {{ item.last_name }}</template
+                  >
+                  <template
+                    v-for="header in headers.filter((header) =>
+                      header.hasOwnProperty('formatter')
+                    )"
+                    v-slot:[`item.${header.value}`]="{ header, value }"
+                  >
+                    {{ header.formatter(value) }}
+                  </template>
+                  <template v-slot:item.role="{ item }">
+                    <v-tooltip left>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          v-bind="attrs"
+                          v-on="on"
+                          color="warning"
+                          x-small
+                          fab
+                          dark
+                        >
+                          <v-icon>mdi-account-circle</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>{{ showRole(item.role) }}</span>
+                    </v-tooltip>
+                    <!-- <v-chip :color="gren" dark>
+                      {{ item.role }}
+                    </v-chip> -->
+                  </template>
+                </v-data-table>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-actions>
+      </v-card>
+    </v-app>
   </div>
 </template>
 <script>
+import UserLayer from "./Layers/UserLayer.vue";
 export default {
-  name: "users",
+  name: "role",
   data() {
     return {
-      checkbox:true,
+      editActive: true,
+      deleteActive: true,
+      checkbox: true,
       singleSelect: false,
       selected: [],
       search: "",
-      headers: [
-        {
-          text: "Dessert (100g serving)",
-          align: "start",
-          sortable: false,
-          value: "name",
-        },
-        { text: "Calories", value: "calories" },
-        { text: "Fat (g)", value: "fat" },
-        { text: "Carbs (g)", value: "carbs" },
-        { text: "Protein (g)", value: "protein" },
-        { text: "Iron (%)", value: "iron" },
-      ],
-      desserts: [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%",
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: "1%",
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: "7%",
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: "8%",
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: "16%",
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: "0%",
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: "2%",
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: "45%",
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: "22%",
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: "6%",
-        },
-      ],
+      headers: [],
+      desserts: [],
+      iframeData: {
+        user: [],
+        isChange: false,
+      },
     };
   },
   methods: {
-    onRowSelected(items) {
-      this.selected = items;
-      console.log(this.selected);
+    selectRow: function(item) {
+      let add = true;
+      for (let i = 0; i < this.selected.length; i++) {
+        if (item._id == this.selected[i]._id) {
+          this.selected.splice(i, 1);
+          add = false;
+          break;
+        }
+      }
+      if (add) this.selected.push(item);
     },
-    selectThisRow() {
-      console.log(event.target.parentElement); //.target.parentElement
-      //console.log(this);
-      // this.$refs.selectableTable.selectRow(2)
+    formatTime: function(item) {
+      return new Date(item).toLocaleString();
+    },
+    formatPrivilege: function(item) {
+      let lp = "";
+      if (item.length > 0) {
+        item.forEach((element) => {
+          lp += `${element.privilege_name}/`;
+        });
+      }
+      return lp == "" ? "N/A" : lp;
+    },
+    loadDataToTable: async function(urn) {
+      try {
+        let result = await new Promise((resolve, reject) => {
+          this.$client.CallFunction(
+            "RoleManager",
+            "GetUserRole",
+            urn ? { username: urn } : {},
+            function(e) {
+              if (e.Status == "Pass") resolve(e.Data);
+              else reject(e.Message);
+            }
+          );
+        });
+        if (result.length > 0) {
+          this.headers = [
+            { text: "User Name", value: "username" },
+            { text: "Full Name", value: "full_name" },
+            { text: "Email", value: "email" },
+            { text: "Address", value: "address" },
+            { text: "Role", value: "role" },
+            {
+              text: "Edit Time",
+              value: "edit_time",
+              formatter: this.formatTime,
+            },
+          ];
+          this.desserts = result;
+        } else {
+          throw new Error("Can't be found any user");
+        }
+      } catch (err) {
+        this.$layer.msg(err);
+      }
+    },
+    searchUser: async function() {
+      this.loadDataToTable(this.search);
+    },
+    showRole: function(item) {
+      let rl = "";
+      if (item.length > 0) {
+        item.forEach((element) => {
+          rl += `${element.role_name}/`;
+        });
+      }
+      return rl == "" ? "N/A" : rl;
+    },
+    showLayer: function() {
+      let user = this.selected[0];
+      this.iframeData.user = user;
+      this.iframeData.isChange = false;
+      this.$layer.iframe({
+        content: {
+          content: UserLayer,
+          parent: this,
+          data: { iframeData: this.iframeData },
+        },
+        area: [this.$vuetify.breakpoint.xs ? "100%" : "auto", "100%"],
+        scrollbar: true,
+        title: `Add role to [${user.username}]`,
+        maxmin: true,
+        shade: true,
+        shadeClose: false,
+        cancel: () => {},
+      });
+    },
+    deleteRole: async function() {
+      let comfirm = {};
+      try {
+        let listID = [];
+        for (let i = 0; i < this.selected.length; i++) {
+          listID.push(this.selected[i]._id);
+        }
+        comfirm = await new Promise((resolve) => {
+          this.$layer.confirm(
+            `Are you sure to delete ${listID.length} record？`,
+            {
+              title: "Confirm delete",
+              btn: ["Yes", "No"],
+              icon: 3,
+            },
+            (layerid) => {
+              resolve({ yes: true, layerID: layerid });
+            },
+            (layerid) => {
+              resolve({ yes: false, layerID: layerid });
+            }
+          );
+        });
+        if (comfirm.yes) {
+          let result = await new Promise((resolve, reject) => {
+            this.$client.CallFunction(
+              "RoleManager",
+              "Delete",
+              {
+                id: listID,
+              },
+              function(e) {
+                if (e.Status == "Pass") resolve(e);
+                else reject(e.Message);
+              }
+            );
+          });
+          if (result) {
+            this.$layer.msg(result.Message);
+            this.loadDataToTable();
+          }
+        }
+      } catch (err) {
+        this.$layer.msg(err);
+      } finally {
+        this.$layer.close(comfirm.layerID);
+      }
     },
   },
+  mounted: async function() {
+    this.loadDataToTable();
+  },
+  watch: {
+    selected() {
+      if (this.selected.length == 1) this.editActive = false;
+      else this.editActive = true;
+      if (this.selected.length > 0) this.deleteActive = false;
+      else this.deleteActive = true;
+    },
+    "iframeData.isChange": {
+      handler: function() {
+        this.loadDataToTable();
+        this.selected = [];
+      },
+      deep: true,
+      immediate: false,
+    },
+  },
+  computed: {},
 };
 </script>
 <style>
 .main-panel .content {
   padding: 80px 30px 30px 280px;
   min-height: calc(100vh - 70px);
+}
+.v-application {
+  border-radius: 4px;
+  background: transparent;
 }
 @media screen and (max-width: 991px) {
   .main-panel .content {
@@ -222,6 +296,9 @@ table {
   background-color: #0e9aa7;
 }
 */
+.v-menu {
+  display: block;
+}
 .table-toolbar {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -230,4 +307,11 @@ table {
   -ms-flex-align: flex-end;
   align-items: flex-end;
 }
+.v-data-table {
+  border: 1px solid #dddddd;
+}
+
+/* .v-data-table td,th{
+    border-right: 1px solid #dddddd;
+} */
 </style>

@@ -54,16 +54,14 @@ class Client {
         let seft = this.Vue;
         this.websocket.onclose = function(e) {
           console.log("onClose:connetion close");
-          seft.swal.fire(
-            {
-              icon: "error",
-              title: "Connetion close...",
-              text: "The server connection close;" + e.reason,
-            },
-            function() {
-              //parent.window.location.reload();
-            }
-          );
+          seft.prototype.$layer.alert("The server connection close;" + e.reason,{
+            title: 'Connetion close...',
+            icon:1 , //0,1,2,3
+            btn: ['OK'],
+          },layerid => {
+            seft.prototype.$layer.close(layerid);
+          }
+        );
         };
       }
     };

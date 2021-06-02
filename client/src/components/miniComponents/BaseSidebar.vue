@@ -20,7 +20,7 @@
         <base-sidebar-link link="/admin/users" icon="people-fill" content="User"></base-sidebar-link>
       </li>
       <li class="active">
-        <base-sidebar-link link="/admin/menu" icon="menu-button-fill" content="Menu"></base-sidebar-link>
+        <base-sidebar-link link="/admin/card" icon="menu-button-fill" content="Card Home"></base-sidebar-link>
       </li>
       <li class="active">
         <base-sidebar-link link="/admin/production" icon="clipboard-check" content="Production"></base-sidebar-link>

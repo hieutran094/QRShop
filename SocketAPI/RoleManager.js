@@ -1,4 +1,5 @@
 import APIBase from "../websocket/APIBase.js";
+import { User } from "../models/user.js";
 import { Role } from "../models/role.js";
 import { Privilege } from "../models/privilege.js";
 import mongoose from "mongoose";
@@ -84,6 +85,66 @@ class RoleManager extends APIBase {
           throw new Error("Save err");
         } else {
           messageReturn.Message = `Success`;
+          messageReturn.Status = StatusValue.Pass;
+          messageReturn.Data = {};
+        }
+      } catch (err) {
+        throw err;
+      }
+    };
+    RoleManager.prototype.Update = async function (req, messageReturn) {
+      try {
+        req.new.edit_time = Date.now();
+        let result = await Role.updateOne({ _id: req.id }, req.new);
+        if (!result) {
+          throw new Error("Save err");
+        } else {
+          messageReturn.Message = `Updated ${result.nModified} records`;
+          messageReturn.Status = StatusValue.Pass;
+          messageReturn.Data = {};
+        }
+      } catch (err) {
+        throw err;
+      }
+    };
+    /**
+     * Get user
+     * @param {*} req
+     * @param {*} messageReturn
+     */
+    RoleManager.prototype.GetUserRole = async function (req, messageReturn) {
+      try {
+        let ListUser = await User.find(
+          req.username
+            ? { username: { $regex: req.username, $options: "i" } }
+            : {}
+        )
+          .populate({
+            path: "role",
+            select: "role_name",
+          })
+          .sort({ username: -1 })
+          .limit(5)
+          .exec();
+        if (!ListUser) {
+          throw new Error("List user is empty");
+        } else {
+          messageReturn.Message = `Success`;
+          messageReturn.Status = StatusValue.Pass;
+          messageReturn.Data = ListUser;
+        }
+      } catch (err) {
+        throw err;
+      }
+    };
+    RoleManager.prototype.AddRoleToUser = async function (req, messageReturn) {
+      try {
+        req.edit_time = Date.now();
+        let result = await User.updateOne({ _id: req.id }, req);
+        if (!result) {
+          throw new Error("Save err");
+        } else {
+          messageReturn.Message = `Updated ${result.nModified} records`;
           messageReturn.Status = StatusValue.Pass;
           messageReturn.Data = {};
         }

@@ -6,6 +6,7 @@ import Dashboard from "../components/Dashboard.vue";
 import Users from "../components/Users.vue";
 import Role from "../components/Role.vue";
 import home from "../components/Home.vue";
+import CardManager from "../components/CardManager.vue";
 import login from "../components/Login.vue";
 Vue.use(VueRouter);
 const router = new VueRouter({
@@ -65,6 +66,15 @@ const router = new VueRouter({
           path: "role",
           component: Role,
           name: "role",
+          meta: {
+            requiresAuth: true,
+            is_admin: true,
+          },
+        },
+        {
+          path: "card",
+          component: CardManager,
+          name: "card",
           meta: {
             requiresAuth: true,
             is_admin: true,

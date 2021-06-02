@@ -7,8 +7,7 @@ class APIBase {
     this.Token = null;
     this._MustLogin = true;
     APIBase.prototype.GetDBDateTime = function () {
-      let ms = { OK: "OK" };
-      return ms;
+      return Date.now();
     };
   }
   get MustLogin() {
