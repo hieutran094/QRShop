@@ -8,6 +8,7 @@ import Role from "../components/Role.vue";
 import home from "../components/Home.vue";
 import CardManager from "../components/CardManager.vue";
 import login from "../components/Login.vue";
+import Icon from "../components/IconPicker/IconPicker.vue"
 Vue.use(VueRouter);
 const router = new VueRouter({
   mode: process.env.NODE_ENV === "production" ? "hash" : "history",
@@ -29,6 +30,14 @@ const router = new VueRouter({
           path: "home",
           component: home,
           name: "home",
+          meta: {
+            guest: true,
+          },
+        },
+        {
+          path: "icon",
+          component: Icon,
+          name: "icon",
           meta: {
             guest: true,
           },

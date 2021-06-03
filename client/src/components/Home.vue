@@ -196,7 +196,7 @@ export default {
           hover: true,
           badge: ["sale", "qrcode"],
           type: "primary",
-          url: "/",
+          url: "/admin",
           col: 4,
         },
         {

@@ -17,7 +17,12 @@
         >{{ item }}</badge
       >
     </div>
-    <base-button tag="a" href="#" :type="card.type" class="mt-4">
+    <base-button
+      tag="a"
+      :type="card.type"
+      @click="$router.push(card.url)"
+      class="mt-4"
+    >
       Learn More
     </base-button>
   </card>
@@ -48,13 +53,13 @@ export default {
 }
 .btn-primary,
 .btn-primary:hover {
-  color: #fff!important;
+  color: #fff !important;
   background-color: #5e72e4;
   border-color: #5e72e4;
 }
 .btn-success,
 .btn-success:hover {
-  color: #fff!important;
+  color: #fff !important;
   background-color: #2dce89;
   border-color: #2dce89;
 }

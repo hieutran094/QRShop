@@ -19,20 +19,16 @@
                     outlined
                     name="input-7-4"
                     label="Content"
-                    v-mode="form.content"
+                    v-model="form.content"
                     :value="form.content"
-                    @input="updateTextAres"
+                    
                   ></v-textarea>
-                  <!-- </v-col> -->
-                  <!-- <v-col cols="12" md="6"> -->
                   <v-text-field
                     v-model="form.url"
                     label="URL"
                     outlined
                     dense
                   ></v-text-field>
-                  <!-- </v-col> -->
-                  <!-- <v-col cols="12"> -->
                   <v-autocomplete
                     v-model="form.type"
                     :items="items"
